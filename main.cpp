@@ -10,9 +10,11 @@
 #include <emscripten/emscripten.h>
 #include <emscripten/html5.h>
 #include <GLES2/gl2.h>
+#include "src/shapefile.h"
 
 GLuint compile_shader(GLenum shaderType, const char *src)
 {
+  test();
   GLuint shader = glCreateShader(shaderType);
   glShaderSource(shader, 1, &src, NULL);
   glCompileShader(shader);
