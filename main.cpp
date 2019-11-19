@@ -13,9 +13,14 @@
 using std::cout;
 using std::endl;
 
-int main()
+int main(int argc, char** argv)
 {
-    ShapefileReader shapefile("data/Neighborhoods_Regions.shp");
-    cout << "finished reading" << endl;
-    return 0;
+  if (argc != 2) {
+    cout << "Usage: ./map [shapefile]" << std::endl;
+    return 1;
+  }
+  ShapefileReader shapefile(argv[1]);
+  cout << "finished reading" << endl;
+  shapefile.print(cout);
+  return 0;
 }

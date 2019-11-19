@@ -32,4 +32,18 @@ inline uint16_t readShortBE(std::istream& istr)
     return ntohs(value);
 }
 
+inline uint32_t readLong(std::istream& istr)
+{
+  uint32_t value = 0;
+  istr.read(reinterpret_cast<char*>(&value), sizeof(value));
+  return value;
+}
+
+inline double readDouble(std::istream& istr)
+{
+  double value = 0.0;
+  istr.read(reinterpret_cast<char*>(&value), sizeof(value));
+  return value;
+}
+
 #endif // MAP_SERIALIZE
