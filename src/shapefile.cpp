@@ -1,6 +1,5 @@
 #include "shapefile.h"
 
-
 /**
 Parse out a big endian short
 */
@@ -19,4 +18,11 @@ uint32_t parse_be_long(std::istream& in)
     uint32_t val = 0;
     in.read(reinterpret_cast<char*>(&val), sizeof(val));
     return ntohl(val);
+}
+
+uint16_t readNetworkShort(std::istream& istr)
+{
+    uint16_t value = 0;
+    istr.read((char*)&value, sizeof(value));
+    return ntohs(value);
 }

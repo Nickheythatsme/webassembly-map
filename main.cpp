@@ -9,9 +9,11 @@
 int main()
 {
   std::stringstream ss;
-  uint16_t val = 0x3040;
-  ss << val;
-  std::cout << std::hex << "0x" << val << std::endl;
-  std::cout << std::hex << "0x" << parse_be_short(ss) << std::endl;
+  uint16_t value = 0x0123;
+  uint16_t network_value = htons(value);
+  ss.write((char*)&network_value, sizeof(network_value));
+  uint16_t response = parse_be_short(ss);
+  std::cout << value << std::endl;
+  std::cout << response << std::endl;
   return 0;
 }
