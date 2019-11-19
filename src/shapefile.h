@@ -4,11 +4,9 @@
 /**
 Parse out a big endian short
 */
-uint16_t parse_be_short(std::istream&);
+uint16_t read_be_short(std::istream&);
 
 /**
 Parse out a big endian long
 */
-uint32_t parse_be_long(std::istream&);
-
-uint16_t readNetworkShort(std::istream& istr);
+uint32_t read_be_long(std::istream&);
