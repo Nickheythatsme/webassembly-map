@@ -5,3 +5,8 @@ project(map)
 enable_testing()
 add_subdirectory(tests)
 
+add_executable(
+        map
+        main.cpp
+        src/shapefile.cpp
+)
