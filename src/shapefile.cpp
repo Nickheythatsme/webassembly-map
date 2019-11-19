@@ -1,28 +1,23 @@
 #include "shapefile.h"
+#include <stdio.h>
 
-/**
-Parse out a big endian short
-*/
-uint16_t parse_be_short(std::istream& in)
+ShapefileReader::ShapefileReader(const char* fname):
+    file(fname),
+    header(new ShapefileHeader())
 {
-    uint16_t val = 0;
-    in.read(reinterpret_cast<char*>(&val), sizeof(val));
-    return ntohs(val);
+    if (!fname) {
+        printf("Could not open file: %s\n", fname);
+        return;
+    }
+    readHeader();
 }
 
-/**
-Parse out a big endian long
-*/
-uint32_t parse_be_long(std::istream& in)
+void ShapefileReader::readHeader()
 {
-    uint32_t val = 0;
-    in.read(reinterpret_cast<char*>(&val), sizeof(val));
-    return ntohl(val);
-}
-
-uint16_t readNetworkShort(std::istream& istr)
-{
-    uint16_t value = 0;
-    istr.read((char*)&value, sizeof(value));
-    return ntohs(value);
+    file.seekg(0);
+    header->file_code = readLongBE(file);
+    printf("%u\n", header->file_code);
+    file.ignore(20);
+    header->file_length = readLongBE(file);
+    printf("%u\n", header->file_length);
 }

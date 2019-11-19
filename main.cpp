@@ -10,17 +10,12 @@
 
 #include "src/shapefile.h"
 
+using std::cout;
+using std::endl;
+
 int main()
 {
-    uint64_t val = 0xffaaff;
-    uint64_t val2 = 0;
-    reverse_value(&val, &val2);
-    std::stringstream ss;
-    uint16_t value = 0x0123;
-    uint16_t network_value = htons(value);
-    ss.write((char*)&network_value, sizeof(network_value));
-    uint16_t response = readShortBE(ss);
-    std::cout << value << std::endl
-            << response << std::endl;
+    ShapefileReader shapefile("data/Neighborhoods_Regions.shp");
+    cout << "finished reading" << endl;
     return 0;
 }
