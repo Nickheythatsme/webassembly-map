@@ -12,7 +12,7 @@ int main()
   uint16_t value = 0x0123;
   uint16_t network_value = htons(value);
   ss.write((char*)&network_value, sizeof(network_value));
-  uint16_t response = parse_be_short(ss);
+  uint16_t response = readShortBE(ss);
   std::cout << value << std::endl;
   std::cout << response << std::endl;
   return 0;
