@@ -77,7 +77,7 @@ bool operator==(const Vec2d&lhs, const Vec2d &rhs)
     return rhs.x == lhs.x && rhs.y == lhs.y;
 }
 
-Polygon::Polygon(std::unique_ptr<Vec2d[]>&& points):
+Polygon::Polygon(std::vector<Vec2d>&& points):
     points(std::move(points))
 {
 }
@@ -85,14 +85,14 @@ Polygon::Polygon(std::unique_ptr<Vec2d[]>&& points):
 bool Polygon::is_complete() const
 {
     Vec2d starting_point = points[0];
-    int starting_point_repeated = 0;
+    int starting_point_count = 0;
     for (const auto& vec: points)
     {
         if (vec == starting_point) {
-            ++starting_point;
+            ++starting_point_count;
         }
     }
-    if (starting_point != 2) {
+    if (starting_point_count != 2) {
         return false;
     }
     // make sure lines do not cross
