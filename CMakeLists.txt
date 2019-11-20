@@ -17,6 +17,7 @@ add_executable(
         main.cpp
         src/record.cpp
         src/shapefile.cpp
+        src/shape_utils.cpp
 )
 
 add_executable(

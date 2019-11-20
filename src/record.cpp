@@ -5,11 +5,6 @@
 #include "record.h"
 #include <sstream>
 
-Point::Point(double x, double y):
-  y(y),
-  x(x)
-{ }
-
 std::istream& Record::readIn(std::istream& in)
 {
   record_number = readLongBE(in);
@@ -44,12 +39,12 @@ std::istream& PolygonRecord::readIn(std::istream& in)
   numPoints = readLong(in);
 
   parts = std::unique_ptr<uint32_t[]>(new uint32_t[numParts]);
-  points = std::unique_ptr<Point[]>(new Point[numPoints]);
+  points = std::unique_ptr<Vec2d[]>(new Vec2d[numPoints]);
   for (int i=0; i<numParts; ++i) {
     parts[i] = readLong(in);
   }
   for (int i=0; i<numPoints; ++i) {
-    points[i] = Point(
+    points[i] = Vec2d(
         readDouble(in),
         readDouble(in)
         );
@@ -87,10 +82,10 @@ uint32_t PolygonRecord::getShapeType() const
     return shapeType;
 }
 
-Point PolygonRecord::calculateCenter() const
+Vec2d PolygonRecord::calculateCenter() const
 {
     double avg_x = box.x_min - (box.x_min - box.x_max);
     double avg_y = box.y_min - (box.y_min - box.y_max);
-    return Point(avg_x, avg_y);
+    return Vec2d(avg_x, avg_y);
 }
 
