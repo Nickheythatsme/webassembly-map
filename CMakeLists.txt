@@ -8,5 +8,6 @@ add_subdirectory(tests)
 add_executable(
         map
         main.cpp
+        src/record.cpp
         src/shapefile.cpp
 )

@@ -3,7 +3,7 @@
 #include <fstream>
 #include <vector>
 #include "serialize.h"
-
+#include "record.h"
 
 #ifndef MAP_SHAPEFILE
 #define MAP_SHAPEFILE
@@ -23,21 +23,10 @@ struct ShapefileHeader {
   double m_min;
 };
 
-class Record {
-  public:
-    Record() = default;
-    Record(const Record &rhs) = default;
-    friend std::istream& operator>>(std::istream& in, Record& record);
-    std::ostream& print(std::ostream &out) const;
-  private:
-    uint32_t record_number;
-    uint32_t content_length;
-    std::fpos_t starting_pos;
-};
-
 class ShapefileReader {
   public:
-    ShapefileReader(const char* fname);
+    ShapefileReader() = delete;
+    explicit ShapefileReader(const char* fname);
     std::ostream& print(std::ostream &out) const;
   protected:
   private:

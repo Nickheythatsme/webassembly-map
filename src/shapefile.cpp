@@ -28,12 +28,13 @@ void ShapefileReader::readHeader()
   header->z_max = readDouble(file);
   header->m_min = readDouble(file);
   header->m_max = readDouble(file);
-  // TODO: read in the rest of the records
+  // TODO: readIn in the rest of the records
   Record record {};
-  file >> record;
+  record.readIn(file);
   while (!file.eof()) {
     records.emplace_back(record);
-    file >> record;
+    file.ignore(record.getContentLength() * 2);
+    record.readIn(file);
   }
 }
 
@@ -58,18 +59,3 @@ std::ostream& ShapefileReader::print(std::ostream &out) const
   return out;
 }
 
-std::istream& operator>>(std::istream& in, Record& record)
-{
-  record.starting_pos = in.tellg();
-  record.record_number = readLongBE(in);
-  record.content_length = readLongBE(in);
-  in.ignore(record.content_length * 2);
-  return in;
-}
-
-using std::endl;
-std::ostream& Record::print(std::ostream &out) const
-{
-  return out << "Record number: " << record_number << endl
-      << "Content length: " << content_length << endl;
-}
