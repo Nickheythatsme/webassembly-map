@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <sstream>
 #include <iostream>
+#include <string>
 
 #if  __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
@@ -15,9 +16,9 @@ using std::endl;
 
 int main(int argc, char** argv)
 {
-  if (argc != 2) {
-    cout << "Usage: ./map [shapefile]" << std::endl;
-    return 1;
+  if (argc == 2) {
+      cout << "Usage: ./map [shapefile]" << endl;
+      return 1;
   }
   ShapefileReader shapefile(argv[1]);
   cout << "finished reading" << endl;

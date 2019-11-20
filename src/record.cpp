@@ -13,6 +13,7 @@ std::istream& Record::readIn(std::istream& in)
 {
   record_number = readLongBE(in);
   content_length = readLongBE(in);
+  shapeType = readLong(in);
   return in;
 }
 
@@ -20,7 +21,8 @@ using std::endl;
 std::ostream& Record::print(std::ostream &out) const
 {
   return out << "Record number:  " << record_number << endl
-             << "Content length: " << content_length << endl;
+             << "Content length: " << content_length << endl
+             << "Shape Type: " << shapeType << endl;
 }
 
 uint32_t Record::getContentLength() const
@@ -31,7 +33,6 @@ uint32_t Record::getContentLength() const
 std::istream& PolygonRecord::readIn(std::istream& in)
 {
   Record::readIn(in);
-  shapeType = readLong(in);
   box[0] = readDouble(in);
   box[1] = readDouble(in);
   box[2] = readDouble(in);
@@ -57,8 +58,7 @@ using std::endl;
 std::ostream& PolygonRecord::print(std::ostream& out) const
 {
   Record::print(out);
-  out << "Shape Type: " << shapeType << endl
-      << "Box: " << box[0] << endl
+  out << "Box: " << box[0] << endl
       << "     " << box[1] << endl
       << "     " << box[2] << endl
       << "     " << box[3] << endl
@@ -73,5 +73,10 @@ std::ostream& PolygonRecord::print(std::ostream& out) const
   for (int i=0; i<numPoints; ++i) {
     out << "(" << points[i].x << ", " << points[i].y << ") ";
   }
-  return out;
+  return out << endl;
+}
+
+uint32_t PolygonRecord::getShapeType() const
+{
+    return shapeType;
 }

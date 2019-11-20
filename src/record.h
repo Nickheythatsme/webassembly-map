@@ -4,22 +4,11 @@
 
 #include <iostream>
 #include <vector>
+#include <memory>
 #include "serialize.h"
 
 #ifndef MAP_SRC_RECORD_H_
 #define MAP_SRC_RECORD_H_
-
-class Record {
-  public:
-    Record() = default;
-    Record(const Record &rhs) = default;
-    virtual std::istream& readIn(std::istream& in);
-    virtual std::ostream& print(std::ostream &out) const;
-    [[nodiscard]] uint32_t getContentLength() const;
-  private:
-    uint32_t record_number{};
-    uint32_t content_length{};
-};
 
 class Point {
   public:
@@ -29,12 +18,25 @@ class Point {
     double y {}; // y coordinate
 };
 
+class Record {
+  public:
+    virtual uint32_t getShapeType() const = 0;
+    virtual ~Record() = default;
+    virtual std::istream& readIn(std::istream& in);
+    virtual std::ostream& print(std::ostream &out) const;
+    [[nodiscard]] uint32_t getContentLength() const;
+  protected:
+    uint32_t record_number {};
+    uint32_t content_length {};
+    uint32_t shapeType {};
+};
+
 class PolygonRecord: public Record {
   public:
-    std::istream& readIn(std::istream& in) override;
-    std::ostream& print(std::ostream& out) const override;
+    uint32_t getShapeType() const;
+    std::istream& readIn(std::istream& in) final;
+    std::ostream& print(std::ostream& out) const final;
   private:
-    uint32_t shapeType;
     std::unique_ptr<double[]> box {new double[4]};
     uint32_t numParts;
     uint32_t numPoints;
