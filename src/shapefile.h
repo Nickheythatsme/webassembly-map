@@ -27,7 +27,7 @@ class ShapefileReader {
   public:
     ShapefileReader() = delete;
     explicit ShapefileReader(const char* fname);
-    std::ostream& print(std::ostream &out) const;
+    std::string toString() const;
   protected:
   private:
     void readHeader();

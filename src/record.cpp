@@ -3,6 +3,7 @@
 //
 
 #include "record.h"
+#include <sstream>
 
 Point::Point(double x, double y):
   y(y),
@@ -18,11 +19,13 @@ std::istream& Record::readIn(std::istream& in)
 }
 
 using std::endl;
-std::ostream& Record::print(std::ostream &out) const
+std::string Record::toString() const
 {
-  return out << "Record number:  " << record_number << endl
+    std::stringstream ss;
+    ss << "Record number:  " << record_number << endl
              << "Content length: " << content_length << endl
              << "Shape Type: " << shapeType << endl;
+    return ss.str();
 }
 
 uint32_t Record::getContentLength() const
@@ -34,8 +37,8 @@ std::istream& PolygonRecord::readIn(std::istream& in)
 {
   Record::readIn(in);
   box.x_min = readDouble(in);
-  box.x_max = readDouble(in);
   box.y_min = readDouble(in);
+  box.x_max = readDouble(in);
   box.y_max = readDouble(in);
   numParts = readLong(in);
   numPoints = readLong(in);
@@ -55,28 +58,39 @@ std::istream& PolygonRecord::readIn(std::istream& in)
 }
 
 using std::endl;
-std::ostream& PolygonRecord::print(std::ostream& out) const
+std::string PolygonRecord::toString() const
 {
-  Record::print(out);
-  out << "Box: " << box.x_min << endl
-      << "     " << box.x_max << endl
-      << "     " << box.y_min << endl
-      << "     " << box.y_max << endl
+  std::stringstream ss;
+  ss << Record::toString();
+  ss << "Box:" << endl
+      << " x min: " << box.x_min << endl
+      << " x max: " << box.x_max << endl
+      << " y min: " << box.y_min << endl
+      << " y max: " << box.y_max << endl
       << "Num Parts:  " << numParts << endl
       << "Num Points: " << numPoints << endl
       << "Parts: ";
   for (int i=0; i<numParts; ++i) {
-    out << parts[i] << ", ";
+    ss << parts[i] << ", ";
   }
-  out << endl
+  ss << endl
       << "Points: ";
   for (int i=0; i<numPoints; ++i) {
-    out << "(" << points[i].x << ", " << points[i].y << ") ";
+    ss << "(" << points[i].x << ", " << points[i].y << ") ";
   }
-  return out << endl;
+  ss << endl;
+  return ss.str();
 }
 
 uint32_t PolygonRecord::getShapeType() const
 {
     return shapeType;
 }
+
+Point PolygonRecord::calculateCenter() const
+{
+    double avg_x = box.x_min - (box.x_min - box.x_max);
+    double avg_y = box.y_min - (box.y_min - box.y_max);
+    return Point(avg_x, avg_y);
+}
+

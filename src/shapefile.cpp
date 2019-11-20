@@ -1,6 +1,6 @@
 #include "shapefile.h"
 #include <stdio.h>
-
+#include <sstream>
 #include <memory>
 
 ShapefileReader::ShapefileReader(const char* fname):
@@ -40,9 +40,10 @@ void ShapefileReader::readHeader()
 }
 
 using std::endl;
-std::ostream& ShapefileReader::print(std::ostream &out) const
+std::string ShapefileReader::toString() const
 {
-  out << "File code:    " << header->file_code << endl
+    std::stringstream ss;
+    ss << "File code:    " << header->file_code << endl
       << "File length:  " << header->file_length << endl
       << "File version: " << header->version << endl
       << "Shape type:   " << header->shape_type << endl
@@ -55,8 +56,8 @@ std::ostream& ShapefileReader::print(std::ostream &out) const
       << "m min:        " << header->m_min << endl
       << "m max:        " << header->m_max << endl;
   for (const auto& record: records) {
-    record->print(out);
+    ss << record->toString();
   }
-  return out;
+  return ss.str();
 }
 

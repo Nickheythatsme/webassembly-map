@@ -24,6 +24,6 @@ int main(int argc, char** argv)
   }
   ShapefileReader shapefile(fname.c_str());
   cout << "finished reading" << endl;
-  shapefile.print(cout);
+  cout << shapefile.toString();
   return 0;
 }

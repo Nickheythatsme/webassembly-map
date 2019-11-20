@@ -24,9 +24,4 @@ add_executable(
         sdl_example.cpp
 )
 target_link_libraries(sdl ${SDL_LIBRARY} ${GLEW_LIBRARIES})
-add_executable(
-    opengl
-    opengl_example.cpp
-    )
-target_link_libraries(sdl ${SDL_LIBRARY} ${GLEW_LIBRARIES})
 

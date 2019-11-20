@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <string>
 #include "serialize.h"
 
 #ifndef MAP_SRC_RECORD_H_
@@ -32,7 +33,7 @@ class Record {
     virtual uint32_t getShapeType() const = 0;
     virtual ~Record() = default;
     virtual std::istream& readIn(std::istream& in);
-    virtual std::ostream& print(std::ostream &out) const;
+    virtual std::string toString() const;
     [[nodiscard]] uint32_t getContentLength() const;
   protected:
     uint32_t record_number {};
@@ -42,9 +43,10 @@ class Record {
 
 class PolygonRecord: public Record {
   public:
-    uint32_t getShapeType() const;
+    uint32_t getShapeType() const final;
     std::istream& readIn(std::istream& in) final;
-    std::ostream& print(std::ostream& out) const final;
+    std::string toString() const final;
+    Point calculateCenter() const;
   private:
     Box box {};
     uint32_t numParts;
