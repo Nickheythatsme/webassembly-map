@@ -33,10 +33,10 @@ uint32_t Record::getContentLength() const
 std::istream& PolygonRecord::readIn(std::istream& in)
 {
   Record::readIn(in);
-  box[0] = readDouble(in);
-  box[1] = readDouble(in);
-  box[2] = readDouble(in);
-  box[3] = readDouble(in);
+  box.x_min = readDouble(in);
+  box.x_max = readDouble(in);
+  box.y_min = readDouble(in);
+  box.y_max = readDouble(in);
   numParts = readLong(in);
   numPoints = readLong(in);
 
@@ -58,11 +58,11 @@ using std::endl;
 std::ostream& PolygonRecord::print(std::ostream& out) const
 {
   Record::print(out);
-  out << "Box: " << box[0] << endl
-      << "     " << box[1] << endl
-      << "     " << box[2] << endl
-      << "     " << box[3] << endl
-      << "Num Parts: " << numParts << endl
+  out << "Box: " << box.x_min << endl
+      << "     " << box.x_max << endl
+      << "     " << box.y_min << endl
+      << "     " << box.y_max << endl
+      << "Num Parts:  " << numParts << endl
       << "Num Points: " << numPoints << endl
       << "Parts: ";
   for (int i=0; i<numParts; ++i) {

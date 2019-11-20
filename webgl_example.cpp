@@ -10,7 +10,6 @@
 #include <emscripten/emscripten.h>
 #include <emscripten/html5.h>
 #include <GLES2/gl2.h>
-#include "src/shapefile.h"
 
 GLuint compile_shader(GLenum shaderType, const char *src)
 {
@@ -83,9 +82,16 @@ int main()
 
   static const float pos_and_color[] = {
   //     x,     y, r, g, b
-     -0.6f, -0.6f, 1, 0, 0,
-      0.6f, -0.6f, 0, 1, 0,
-      0.f,   0.6f, 0, 0, 1,
+    -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // Top-left
+     0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // Top-right
+     0.5f, -0.5f, 1.0f, 0.0f, 0.0f, // Bottom-right
+    -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,  // Bottom-left
+     0.0f, -0.9f, 1.0f, 0.0f, 0.0f, // Bottom-middle
+  };
+  GLuint elements[] = {
+    0, 1, 2,
+    2, 3, 0,
+    3, 2, 4,
   };
 
 #ifdef DRAW_FROM_CLIENT_MEMORY
@@ -96,6 +102,12 @@ int main()
   glGenBuffers(1, &vbo);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(pos_and_color), pos_and_color, GL_STATIC_DRAW);
+
+  GLuint ebo;
+  glGenBuffers(1, &ebo);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
+
   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 20, 0);
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 20, (void*)8);
 #endif
@@ -104,7 +116,9 @@ int main()
 
   glClearColor(0.3f,0.3f,0.3f,1);
   glClear(GL_COLOR_BUFFER_BIT);
-  glDrawArrays(GL_TRIANGLES, 0, 3);
+  //glDrawArrays(GL_TRIANGLES, 0, 6);
+  glDrawElements(GL_TRIANGLES, sizeof(elements)/sizeof(GLuint), GL_UNSIGNED_INT, 0);
+
 
 #ifdef EXPLICIT_SWAP
   emscripten_webgl_commit_frame();

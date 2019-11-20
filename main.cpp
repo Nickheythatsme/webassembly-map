@@ -16,11 +16,13 @@ using std::endl;
 
 int main(int argc, char** argv)
 {
+  std::string fname = "data/Neighborhoods_Regions.shp";
   if (argc == 2) {
-      cout << "Usage: ./map [shapefile]" << endl;
-      return 1;
+      //cout << "Usage: ./map [shapefile]" << endl;
+      //return 1;
+      fname = argv[1];
   }
-  ShapefileReader shapefile(argv[1]);
+  ShapefileReader shapefile(fname.c_str());
   cout << "finished reading" << endl;
   shapefile.print(cout);
   return 0;
