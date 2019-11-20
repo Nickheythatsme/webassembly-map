@@ -6,7 +6,6 @@ Vec2d::Vec2d(double x, double y):
   x(x)
 { }
 
-
 Vec2d calc_direction(const Vec2d &from, const Vec2d &to)
 {
     double diff_x = to.x - from.x;
@@ -65,8 +64,37 @@ Vec2d operator+(const Vec2d &lhs, const Vec2d &rhs)
             );
 }
 
+Vec2d operator*(const Vec2d &lhs, const Vec2d &rhs)
+{
+    return Vec2d(
+            lhs.x * rhs.x,
+            lhs.y * rhs.y
+            );
+}
+
 bool operator==(const Vec2d&lhs, const Vec2d &rhs)
 {
     return rhs.x == lhs.x && rhs.y == lhs.y;
 }
 
+Polygon::Polygon(std::unique_ptr<Vec2d[]>&& points):
+    points(std::move(points))
+{
+}
+
+bool Polygon::is_complete() const
+{
+    Vec2d starting_point = points[0];
+    int starting_point_repeated = 0;
+    for (const auto& vec: points)
+    {
+        if (vec == starting_point) {
+            ++starting_point;
+        }
+    }
+    if (starting_point != 2) {
+        return false;
+    }
+    // make sure lines do not cross
+    std::vector<Vec2d> lines {points.size()};
+}
