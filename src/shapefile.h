@@ -33,7 +33,7 @@ class ShapefileReader {
     void readHeader();
     std::ifstream file;
     std::unique_ptr<ShapefileHeader> header;
-    std::vector<Record> records;
+    std::vector<std::unique_ptr<Record>> records;
 };
 
 

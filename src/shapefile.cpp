@@ -1,6 +1,8 @@
 #include "shapefile.h"
 #include <stdio.h>
 
+#include <memory>
+
 ShapefileReader::ShapefileReader(const char* fname):
     file(fname),
     header(new ShapefileHeader())
@@ -28,13 +30,12 @@ void ShapefileReader::readHeader()
   header->z_max = readDouble(file);
   header->m_min = readDouble(file);
   header->m_max = readDouble(file);
-  // TODO: readIn in the rest of the records
-  Record record {};
-  record.readIn(file);
+  std::unique_ptr<Record> record {new PolygonRecord()};
+  record->readIn(file);
   while (!file.eof()) {
-    records.emplace_back(record);
-    file.ignore(record.getContentLength() * 2);
-    record.readIn(file);
+    records.emplace_back(std::move(record));
+    record = std::make_unique<PolygonRecord>();
+    record->readIn(file);
   }
 }
 
@@ -54,7 +55,7 @@ std::ostream& ShapefileReader::print(std::ostream &out) const
       << "m min:        " << header->m_min << endl
       << "m max:        " << header->m_max << endl;
   for (const auto& record: records) {
-    record.print(out);
+    record->print(out);
   }
   return out;
 }
