@@ -1,16 +1,32 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.10)
 set(CMAKE_CXX_STANDARD 17)
 project(map)
 
 enable_testing()
 add_subdirectory(tests)
 
-find_package(SDL REQUIRED)
-include_directories(${SDL_INCLUDE_DIR})
+find_package(SDL)
+if (${SDL_FOUND})
+    message(STATUS "Found SDL")
+endif()
 
-find_package(GLEW REQUIRED)
-include_directories(${GLEW_INCLUDE_DIRS})
-message(${GLEW_INCLUDE_DIRS})
+find_package(GLEW)
+if (${GLEW_FOUND})
+    message(STATUS "Found GLEW")
+endif()
+
+find_package(GLM REQUIRED)
+message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
+
+if (${GLEW_FOUND} AND ${SDL_FOUND})
+    include_directories(${GLEW_INCLUDE_DIRS})
+    include_directories(${SDL_INCLUDE_DIR})
+    add_executable(
+            sdl
+            sdl_example.cpp
+    )
+    target_link_libraries(sdl ${SDL_LIBRARY} ${GLEW_LIBRARIES})
+endif()
 
 add_executable(
         map
@@ -20,9 +36,4 @@ add_executable(
         src/shape_utils.cpp
 )
 
-add_executable(
-        sdl
-        sdl_example.cpp
-)
-target_link_libraries(sdl ${SDL_LIBRARY} ${GLEW_LIBRARIES})
 

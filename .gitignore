@@ -6,8 +6,3 @@ index.wasm
 .idea/
 _debug/
 cmake-build-debug/
-data/Neighborhoods_Regions.cpg
-data/Neighborhoods_Regions.dbf
-data/Neighborhoods_Regions.prj
-data/Neighborhoods_Regions.shp
-data/Neighborhoods_Regions.shx
