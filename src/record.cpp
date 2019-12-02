@@ -39,12 +39,12 @@ std::istream& PolygonRecord::readIn(std::istream& in)
   numPoints = readLong(in);
 
   parts = std::unique_ptr<uint32_t[]>(new uint32_t[numParts]);
-  points = std::unique_ptr<Vec2d[]>(new Vec2d[numPoints]);
+  points = std::unique_ptr<Vec2[]>(new Vec2[numPoints]);
   for (int i=0; i<numParts; ++i) {
     parts[i] = readLong(in);
   }
   for (int i=0; i<numPoints; ++i) {
-    points[i] = Vec2d(
+    points[i] = Vec2(
         readDouble(in),
         readDouble(in)
         );
@@ -82,10 +82,10 @@ uint32_t PolygonRecord::getShapeType() const
     return shapeType;
 }
 
-Vec2d PolygonRecord::calculateCenter() const
+Vec2 PolygonRecord::calculateCenter() const
 {
     double avg_x = box.x_min - (box.x_min - box.x_max);
     double avg_y = box.y_min - (box.y_min - box.y_max);
-    return Vec2d(avg_x, avg_y);
+    return Vec2(avg_x, avg_y);
 }
 

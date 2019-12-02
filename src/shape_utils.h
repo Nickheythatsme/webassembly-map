@@ -12,32 +12,32 @@ struct Box {
   double y_max {};
 };
 
-class Vec2d {
+class Vec2 {
   public:
-    Vec2d() = default;
-    Vec2d(double x, double y);
+    Vec2() = default;
+    Vec2(double x, double y);
     double x {};
     double y {};
 };
 
-bool operator==(const Vec2d &lhs, const Vec2d &rhs);
-Vec2d operator-(const Vec2d &lhs, const Vec2d &rhs);
-Vec2d operator+(const Vec2d &lhs, const Vec2d &rhs);
-Vec2d operator*(const Vec2d &lhs, const Vec2d &rhs);
+bool operator==(const Vec2 &lhs, const Vec2 &rhs);
+Vec2 operator-(const Vec2 &lhs, const Vec2 &rhs);
+Vec2 operator+(const Vec2 &lhs, const Vec2 &rhs);
+Vec2 operator*(const Vec2 &lhs, const Vec2 &rhs);
 
-Vec2d calc_direction(const Vec2d &from, const Vec2d &to);
-double calc_magnitude(const Vec2d &v1);
-bool calc_colinear(const Vec2d &a, const Vec2d &b, const Vec2d &c);
-bool calc_on_line(const Vec2d& start, const Vec2d& to_test, const Vec2d& end);
+Vec2 calc_direction(const Vec2 &from, const Vec2 &to);
+double calc_magnitude(const Vec2 &v1);
+bool calc_colinear(const Vec2 &a, const Vec2 &b, const Vec2 &c);
+bool calc_on_line(const Vec2& start, const Vec2& to_test, const Vec2& end);
 
 class Polygon {
     public:
         Polygon() = delete;
-        Polygon(std::vector<Vec2d>&& points);
+        Polygon(std::vector<Vec2>&& points);
         bool is_complete() const;
     protected:
     private:
-        std::vector<Vec2d> points;
+        std::vector<Vec2> points;
 };
 
 #endif // MAP_SHAPE_UTILS

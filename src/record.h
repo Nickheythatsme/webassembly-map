@@ -30,13 +30,13 @@ class PolygonRecord: public Record {
     uint32_t getShapeType() const final;
     std::istream& readIn(std::istream& in) final;
     std::string toString() const final;
-    Vec2d calculateCenter() const;
+    Vec2 calculateCenter() const;
   private:
     Box box {};
     uint32_t numParts;
     uint32_t numPoints;
     std::unique_ptr<uint32_t[]> parts;
-    std::unique_ptr<Vec2d[]> points;
+    std::unique_ptr<Vec2[]> points;
 };
 
 
