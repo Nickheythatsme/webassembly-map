@@ -37,4 +37,8 @@ include_directories(${PROJECT_SOURCE_DIR}/src)
 add_executable(example_test example_test.cpp)
 target_link_libraries(example_test gtest_main)
 add_test(NAME example_test COMMAND example_test)
+
+add_executable(vector_test vector_test.cpp ../src/shape_utils/vector.h)
+target_link_libraries(vector_test gtest_main)
+add_test(NAME vector_test COMMAND vector_test)
 ### END Add/Make tests

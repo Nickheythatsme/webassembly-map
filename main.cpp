@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <sstream>
 #include <iostream>
+#include <string>
 
 #if  __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
@@ -10,17 +11,20 @@
 
 #include "src/shapefile.h"
 
-int main()
+using std::cout;
+using std::endl;
+using namespace map;
+
+int main(int argc, char** argv)
 {
-    uint64_t val = 0xffaaff;
-    uint64_t val2 = 0;
-    reverse_value(&val, &val2);
-    std::stringstream ss;
-    uint16_t value = 0x0123;
-    uint16_t network_value = htons(value);
-    ss.write((char*)&network_value, sizeof(network_value));
-    uint16_t response = readShortBE(ss);
-    std::cout << value << std::endl
-            << response << std::endl;
-    return 0;
+  std::string fname = "data/Neighborhoods_Regions.shp";
+  if (argc == 2) {
+      //cout << "Usage: ./map [shapefile]" << endl;
+      //return 1;
+      fname = argv[1];
+  }
+  ShapefileReader shapefile(fname.c_str());
+  cout << "finished reading" << endl;
+  cout << shapefile.toString();
+  return 0;
 }
