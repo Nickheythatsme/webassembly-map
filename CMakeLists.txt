@@ -5,17 +5,44 @@ project(map)
 enable_testing()
 add_subdirectory(tests)
 
-find_package(SDL2)
-find_package(OpenGL)
-find_package(GLEW)
 
-if (${SDL2_FOUND} AND ${OPENGL_FOUND} AND ${GLEW_FOUND})
-    include_directories(${SDL2_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS})
+# Download and Build SDL2
+SET(SDL2_VERSION SDL2-2.0.10)
+SET(SDL2_filename ${CMAKE_CURRENT_BINARY_DIR}/${SDL2_VERSION}.tar.gz)
+SET(SDL2_outdir ${CMAKE_CURRENT_BINARY_DIR}/${SDL2_VERSION})
+SET(URL https://www.libsdl.org/release/${SDL2_VERSION}.tar.gz)
+
+if (NOT EXISTS ${SDL2_filename})
+    file(DOWNLOAD ${URL} ${SDL2_filename}
+       TIMEOUT 60  # seconds
+       SHOW_PROGRESS
+      )
+endif()
+if (NOT EXISTS ${SDL2_outdir})
+    execute_process(COMMAND ${CMAKE_COMMAND} -E tar -xf ${SDL2_filename}
+                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+    if (NOT EXISTS ${SDL2_outdir}/build/SDL.o)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E time ./configure
+            WORKING_DIRECTORY ${SDL2_outdir})
+        execute_process(COMMAND ${CMAKE_COMMAND} -E time make 
+            WORKING_DIRECTORY ${SDL2_outdir})
+    endif()
+endif()
+
+list(APPEND CMAKE_MODULE_PATH ${SDL2_outdir})
+find_package(OpenGL)
+find_package(SDL2 REQUIRED)
+
+if (${OPENGL_FOUND} AND ${SDL2_FOUND})
+    include_directories(${SDL2_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR})
     add_executable(
             sdl2
             sdl2_example.cpp
     )
-    target_link_libraries(sdl2 ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
+    target_link_libraries(sdl2 
+        ${OPENGL_LIBRARIES}
+        ${SDL2_LIBRARIES}
+        )
 endif()
 
 add_executable(

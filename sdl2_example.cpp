@@ -21,9 +21,11 @@
 
 #define GL_GLEXT_PROTOTYPES
 
-#include <GL/GL.h>
+//#include <GL/GL.h>
+#include <OpenGL/gl.h>
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_opengl.h"
+
 
 #include <stdio.h>
 #include <string.h>
