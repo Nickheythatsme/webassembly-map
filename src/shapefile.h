@@ -8,6 +8,8 @@
 #ifndef MAP_SHAPEFILE
 #define MAP_SHAPEFILE
 
+namespace map {
+
 struct ShapefileHeader {
   uint32_t file_code;
   uint32_t file_length;
@@ -42,5 +44,6 @@ class Shapefile {
     Shapefile() = default;
 };
 
+} // namespace map
 
 #endif  // MAP_SHAPEFILE

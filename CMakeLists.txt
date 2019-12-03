@@ -15,9 +15,6 @@ if (${GLEW_FOUND})
     message(STATUS "Found GLEW")
 endif()
 
-find_package(GLM REQUIRED)
-message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
-
 if (${GLEW_FOUND} AND ${SDL_FOUND})
     include_directories(${GLEW_INCLUDE_DIRS})
     include_directories(${SDL_INCLUDE_DIR})
@@ -33,7 +30,6 @@ add_executable(
         main.cpp
         src/record.cpp
         src/shapefile.cpp
-        src/shape_utils.cpp
+        src/shape_utils/vector.h
+        src/shape_utils/line.h
 )
-
-

@@ -7,10 +7,20 @@
 #include <memory>
 #include <string>
 #include "serialize.h"
-#include "shape_utils.h"
+#include "shape_utils/vector.h"
 
 #ifndef MAP_SRC_RECORD_H_
 #define MAP_SRC_RECORD_H_
+
+namespace map {
+using namespace shapeutils;
+
+struct Box {
+  double x_min {};
+  double x_max {};
+  double y_min {};
+  double y_max {};
+};
 
 class Record {
   public:
@@ -30,14 +40,15 @@ class PolygonRecord: public Record {
     uint32_t getShapeType() const final;
     std::istream& readIn(std::istream& in) final;
     std::string toString() const final;
-    Vec2d calculateCenter() const;
+    Vec2<double> calculateCenter() const;
   private:
     Box box {};
     uint32_t numParts;
     uint32_t numPoints;
     std::unique_ptr<uint32_t[]> parts;
-    std::unique_ptr<Vec2d[]> points;
+    std::unique_ptr<Vec2<double>[]> points;
 };
 
 
+} // namespace map
 #endif //MAP_SRC_RECORD_H_

@@ -6,6 +6,8 @@
 #ifndef MAP_SERIALIZE
 #define MAP_SERIALIZE
 
+namespace map {
+
 inline uint64_t readLongLongBE(std::istream& istr)
 {
     uint64_t network_value = 0;
@@ -45,5 +47,7 @@ inline double readDouble(std::istream& istr)
   istr.read(reinterpret_cast<char*>(&value), sizeof(value));
   return value;
 }
+
+} // namespace map
 
 #endif // MAP_SERIALIZE
