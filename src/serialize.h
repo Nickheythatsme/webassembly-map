@@ -8,13 +8,13 @@
 
 inline uint64_t readLongLongBE(std::istream& istr)
 {
-    uint64_t network_value = 0;
+    uint64_t current_value = 0;
     uint64_t value = 0;
-    istr.read((char*)&network_value, sizeof(network_value));
-    value = ntohl((uint32_t) network_value);
-    value <<= 32;
-    network_value >>= 32;
-    value += (uint32_t) ntohl((uint32_t) network_value);
+    istr.read(reinterpret_cast<char*>(&current_value), sizeof(current_value));
+    value = ntohl(static_cast<uint32_t>(current_value));
+    value <<= 32ul;
+    current_value >>= 32ul;
+    value += ntohl(static_cast<uint32_t>(current_value));
     return value;
 }
 
