@@ -7,14 +7,15 @@ add_subdirectory(tests)
 
 find_package(SDL2)
 find_package(OpenGL)
+find_package(GLEW)
 
-if (${SDL2_FOUND} AND ${OPENGL_FOUND})
-    include_directories(${SDL2_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR})
+if (${SDL2_FOUND} AND ${OPENGL_FOUND} AND ${GLEW_FOUND})
+    include_directories(${SDL2_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS})
     add_executable(
             sdl2
             sdl2_example.cpp
     )
-    target_link_libraries(sdl2 ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+    target_link_libraries(sdl2 ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
 endif()
 
 add_executable(

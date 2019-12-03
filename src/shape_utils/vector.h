@@ -48,13 +48,12 @@ class Vec2 {
     {
         return Vec2<T>(lhs.x + rhs, lhs.y + rhs);
     }
-    // Cross product
-    friend Vec2<T> operator*(const Vec2<T> &lhs, const Vec2<T> &rhs)
+    // Dot product
+    friend T operator*(const Vec2<T> &lhs, const Vec2<T> &rhs)
     {
-        return Vec2<T>(
-                lhs.x * rhs.x, lhs.y * rhs.y
-                );
+        return lhs.x * rhs.x + lhs.y * rhs.y;
     }
+    // Multiply by a scalar
     friend Vec2<T> operator*(const Vec2<T> &lhs, const T &rhs)
     {
         return Vec2<T>(lhs.x * rhs, lhs.y * rhs);
@@ -77,10 +76,11 @@ class Vec2 {
         y -= rhs.y;
         return *this;
     }
-    Vec2<T>& operator*=(const Vec2<T> &rhs)
+    // Multiply by a scalar
+    Vec2<T>& operator*=(const T &rhs)
     {
-        x *= rhs.x;
-        y *= rhs.y;
+        x *= rhs;
+        y *= rhs;
         return *this;
     }
     const T& getX() const

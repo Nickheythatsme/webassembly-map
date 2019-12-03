@@ -6,6 +6,7 @@
 using std::cout;
 using std::endl;
 using namespace map::shapeutils;
+
 using Vd = Vec2<double>;
 using Ld = Line<double>;
 
@@ -15,7 +16,7 @@ std::ostream& operator<<(std::ostream& out, const Vec2<T>& v) {
     return out;
 }
 
-TEST(Vector, Vector) {
+TEST(Vector, Smoke) {
     cout << "Vector test working!" << endl;
 }
 
@@ -53,10 +54,14 @@ TEST(Vector, Assignment) {
     }
     {
         Vd vd1 {2.0, 2.0};
-        Vd vd2 {2.0, 2.0};
-        vd1 *= vd2;
+        vd1 *= 2.0;
         EXPECT_EQ(vd1.getX(), 4.0);
         EXPECT_EQ(vd1.getY(), 4.0);
+    }
+    {
+        Vd vd1 {1.0, 2.0};
+        Vd vd2 {3.0, 4.0};
+        EXPECT_EQ(vd1 * vd2, (1.0*3.0)+(2.0*4.0));
     }
 }
 
