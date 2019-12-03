@@ -30,7 +30,6 @@ add_executable(
         main.cpp
         src/record.cpp
         src/shapefile.cpp
-        src/shape_utils.cpp
+        src/shape_utils/vector.h
+        src/shape_utils/line.h
 )
-
-

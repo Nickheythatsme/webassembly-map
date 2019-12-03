@@ -9,7 +9,7 @@
 
 namespace map { namespace shapeutils {
 
-template<typename T=double>
+template<typename T>
 class Vec2 {
   public:
     Vec2() = default;

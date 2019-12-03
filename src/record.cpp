@@ -5,6 +5,8 @@
 #include "record.h"
 #include <sstream>
 
+namespace map {
+
 std::istream& Record::readIn(std::istream& in)
 {
   record_number = readLongBE(in);
@@ -39,7 +41,7 @@ std::istream& PolygonRecord::readIn(std::istream& in)
   numPoints = readLong(in);
 
   parts = std::unique_ptr<uint32_t[]>(new uint32_t[numParts]);
-  points = std::unique_ptr<Vec2[]>(new Vec2[numPoints]);
+  points = std::unique_ptr<Vec2<double>[]>(new Vec2<double>[numPoints]);
   for (int i=0; i<numParts; ++i) {
     parts[i] = readLong(in);
   }
@@ -71,7 +73,7 @@ std::string PolygonRecord::toString() const
   ss << endl
       << "Points: ";
   for (int i=0; i<numPoints; ++i) {
-    ss << "(" << points[i].x << ", " << points[i].y << ") ";
+    ss << "(" << points[i].getX() << ", " << points[i].getY() << ") ";
   }
   ss << endl;
   return ss.str();
@@ -82,10 +84,11 @@ uint32_t PolygonRecord::getShapeType() const
     return shapeType;
 }
 
-Vec2 PolygonRecord::calculateCenter() const
+Vec2<double> PolygonRecord::calculateCenter() const
 {
     double avg_x = box.x_min - (box.x_min - box.x_max);
     double avg_y = box.y_min - (box.y_min - box.y_max);
     return Vec2(avg_x, avg_y);
 }
 
+} // namespace map

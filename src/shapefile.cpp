@@ -3,6 +3,8 @@
 #include <sstream>
 #include <memory>
 
+namespace map {
+
 ShapefileReader::ShapefileReader(const char* fname):
     file(fname),
     header(new ShapefileHeader())
@@ -60,4 +62,6 @@ std::string ShapefileReader::toString() const
   }
   return ss.str();
 }
+
+} // namespace map
 

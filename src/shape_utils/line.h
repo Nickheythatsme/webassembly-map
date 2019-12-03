@@ -29,7 +29,6 @@ class Line
         {
             return calculate_magnitude(end - start);
         }
-        // TODO add error acceptance!
         bool onLine(const Vec2<T>& to_test) const
         {
             if (to_test == start || to_test == end)
@@ -65,11 +64,6 @@ class Line
         Vec2<T> start; // starting point
         Vec2<T> end; // ending point
 };
-
-/**
-bool calc_colinear(const Vec2 &a, const Vec2 &b, const Vec2 &c);
-bool calc_on_line(const Vec2& start, const Vec2& to_test, const Vec2& end);
-*/
 
 } // namespace shapeutils
 } // namespace map
