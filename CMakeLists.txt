@@ -5,24 +5,16 @@ project(map)
 enable_testing()
 add_subdirectory(tests)
 
-find_package(SDL)
-if (${SDL_FOUND})
-    message(STATUS "Found SDL")
-endif()
+find_package(SDL2)
+find_package(OpenGL)
 
-find_package(GLEW)
-if (${GLEW_FOUND})
-    message(STATUS "Found GLEW")
-endif()
-
-if (${GLEW_FOUND} AND ${SDL_FOUND})
-    include_directories(${GLEW_INCLUDE_DIRS})
-    include_directories(${SDL_INCLUDE_DIR})
+if (${SDL2_FOUND} AND ${OPENGL_FOUND})
+    include_directories(${SDL2_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR})
     add_executable(
-            sdl
-            sdl_example.cpp
+            sdl2
+            sdl2_example.cpp
     )
-    target_link_libraries(sdl ${SDL_LIBRARY} ${GLEW_LIBRARIES})
+    target_link_libraries(sdl2 ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 endif()
 
 add_executable(
