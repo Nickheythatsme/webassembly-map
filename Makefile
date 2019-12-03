@@ -9,5 +9,5 @@ sdl2: sdl2glshader.c
 
 clean:
 	rm -f index.*
-	rm -f a.out.*
+	rm -f sdl2glshader sdl2.*
 
