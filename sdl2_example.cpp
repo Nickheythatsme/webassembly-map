@@ -21,8 +21,17 @@
 
 #define GL_GLEXT_PROTOTYPES
 
-//#include <GL/GL.h>
+#ifdef __APPLE__
 #include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#else
+#ifdef _WIN32
+  #include <windows.h>
+#endif
+#include <GL/gl.h>
+#include <GL/glu.h>
+#endif
+
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_opengl.h"
 
