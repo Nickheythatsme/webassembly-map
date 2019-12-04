@@ -12,25 +12,25 @@ SET(SDL2_filename ${CMAKE_CURRENT_BINARY_DIR}/${SDL2_VERSION}.tar.gz)
 SET(SDL2_outdir ${CMAKE_CURRENT_BINARY_DIR}/${SDL2_VERSION})
 SET(URL https://www.libsdl.org/release/${SDL2_VERSION}.tar.gz)
 
-if (NOT EXISTS ${SDL2_outdir})
-    if (NOT EXISTS ${SDL2_filename})
-        file(DOWNLOAD ${URL} ${SDL2_filename}
-           TIMEOUT 60  # seconds
-           SHOW_PROGRESS
-          )
-    endif()
-    execute_process(COMMAND ${CMAKE_COMMAND} -E tar -xf ${SDL2_filename}
-                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-    if (NOT EXISTS ${SDL2_outdir}/build/SDL.o)
-        execute_process(COMMAND ${CMAKE_COMMAND} -E time ./configure
-            WORKING_DIRECTORY ${SDL2_outdir})
-        execute_process(COMMAND ${CMAKE_COMMAND} -E time make 
-            WORKING_DIRECTORY ${SDL2_outdir})
-    endif()
-endif()
+#if (NOT EXISTS ${SDL2_outdir})
+#    if (NOT EXISTS ${SDL2_filename})
+#        file(DOWNLOAD ${URL} ${SDL2_filename}
+#           TIMEOUT 60  # seconds
+#           SHOW_PROGRESS
+#          )
+#    endif()
+#    execute_process(COMMAND ${CMAKE_COMMAND} -E tar -xf ${SDL2_filename}
+#                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+#    if (NOT EXISTS ${SDL2_outdir}/build/SDL.o)
+#        execute_process(COMMAND ${CMAKE_COMMAND} -E time ./configure
+#            WORKING_DIRECTORY ${SDL2_outdir})
+#        execute_process(COMMAND ${CMAKE_COMMAND} -E time make 
+#            WORKING_DIRECTORY ${SDL2_outdir})
+#    endif()
+#endif()
 
 find_package(OpenGL)
-find_package(SDL2 REQUIRED)
+find_package(SDL2)
 
 if (${OPENGL_FOUND} AND ${SDL2_FOUND})
     include_directories(${SDL2_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR})
@@ -52,3 +52,5 @@ add_executable(
         src/shape_utils/vector.h
         src/shape_utils/line.h
 )
+
+add_test(NAME map COMMAND map ${CMAKE_SOURCE_DIR}/data/Neighborhoods_Regions.shp)
