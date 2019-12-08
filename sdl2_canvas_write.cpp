@@ -4,12 +4,13 @@
 // found in the LICENSE file.
 
 #ifndef __EMSCPRIPTEN__
-#include "SDL.h"
-#include "SDL_opengl.h"
-#include "SDL_hints.h"
-#include "sdl2_arb.h"
+    #include "SDL.h"
+    #include "SDL_opengl.h"
+    #include "sdl2_arb.h"
 #else
-#include <emscripten.h>
+    #include <emscripten.h>
+    #include "SDL2/sdl.h"
+    #include "SDL2/SDL_opengl.h"
 #endif
 #include <assert.h>
 #include <iostream>
@@ -20,13 +21,15 @@ using std::endl;
 static void sdlError(const char *str) 
 {
     fprintf(stderr, "Error at %s: %s\n", str, SDL_GetError());
-#ifdef __EMSCRIPTEN__
-    emscripten_force_exit(1);
-#endif
+    exit(1);
 }
 
 void setShaders() {
+#ifdef __EMSCRIPTEN__
     GLuint v, f, p;
+#else
+    void *v, *f, *p;
+#endif
     GLint ok;
 
     const char *vv = "void main()                   \n"
@@ -38,55 +41,34 @@ void setShaders() {
         "  gl_FragColor = vec4(gl_FragCoord.y/480.0, gl_FragCoord.x/640.0, 0.66, 1.0); \n"
         "}";
 
-    v = (unsigned long long) glCreateShaderObject_(GL_VERTEX_SHADER);
-    f = (unsigned long long) glCreateShaderObject_(GL_FRAGMENT_SHADER);
+    v = glCreateShaderObject_(GL_VERTEX_SHADER);
+    f = glCreateShaderObject_(GL_FRAGMENT_SHADER);
 
-    glShaderSource_((void *)v, 1, &vv,NULL);
-    glShaderSource_((void *)f, 1, &ff,NULL);
+    glShaderSource_(v, 1, &vv,NULL);
+    glShaderSource_(f, 1, &ff,NULL);
 
-    glCompileShader_((void *)v);
-    glGetObjectParameteriv_((void *)v, GL_OBJECT_COMPILE_STATUS_ARB, &ok);
+    glCompileShader_(v);
+    glGetObjectParameteriv_(v, GL_OBJECT_COMPILE_STATUS_ARB, &ok);
     if (!ok) {
         char msg[512];
-        glGetInfoLog_((void *)v, sizeof msg, NULL, msg);
+        glGetInfoLog_(v, sizeof msg, NULL, msg);
         printf("shader compilation issue: %s\n", msg);
     }
     assert(ok);
 
-    glCompileShader_((void *)f);
-    glGetObjectParameteriv_((void *)f, GL_OBJECT_COMPILE_STATUS_ARB, &ok);
+    glCompileShader_(f);
+    glGetObjectParameteriv_(f, GL_OBJECT_COMPILE_STATUS_ARB, &ok);
     assert(ok);
 
-    p = (unsigned long long) glCreateProgramObject_();
-    glAttachObject_((void *)p, (void *)f);
-    glAttachObject_((void *)p, (void *)v);
+    p = glCreateProgramObject_();
+    glAttachObject_(p, f);
+    glAttachObject_(p, v);
 
-    glLinkProgram_((void *)p);
-    glGetObjectParameteriv_((void *)p, GL_OBJECT_LINK_STATUS_ARB, &ok);
+    glLinkProgram_(p);
+    glGetObjectParameteriv_(p, GL_OBJECT_LINK_STATUS_ARB, &ok);
     assert(ok);
 
-    glUseProgramObject_((void *)p);
-}
-
-
-void draw(SDL_Window *window, SDL_Surface *surface) {
-    int x, y;
-
-    if (SDL_MUSTLOCK(surface)) {
-        if (SDL_LockSurface(surface) != 0) sdlError("SDL_LockSurface");
-    }
-
-    for (y = 0; y < 256; y++) {
-        Uint32 *p = (Uint32 *)(((Uint8 *)surface->pixels) +
-                               surface->pitch * y);
-        for (x = 0; x < 256; x++) {
-            *(p++) = SDL_MapRGB(surface->format, x, x ^ y, y);
-        }
-    }
-
-    if (SDL_MUSTLOCK(surface)) SDL_UnlockSurface(surface);
-    if (SDL_UpdateWindowSurface(window) != 0)
-        sdlError("SDL_UpdateWindowSurface");
+    glUseProgramObject_(p);
 }
 
 int main(void) {
@@ -106,9 +88,9 @@ int main(void) {
         SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL                  // flags - see below
     );
 
-    if (window == NULL) sdlError("SDL_CreateWindow");
+    if (window == nullptr) sdlError("SDL_CreateWindow");
     context = SDL_GL_CreateContext(window);
-    if (context == NULL) sdlError("SDL_CreateContext");
+    if (context == nullptr) sdlError("SDL_CreateContext");
 
     glClearColor(0, 0, 0, 0);
     glViewport(0, 0, 640, 480);
@@ -123,17 +105,11 @@ int main(void) {
     setShaders();
 
     glColor3f(0, 1, 1); // is overridden by the shader, useful for debugging native builds
-    glBegin( GL_TRIANGLES );
+    glBegin(GL_TRIANGLES);
+
     glTexCoord2i(0, 0); glVertex3f( 10,  10,  0);
     glTexCoord2i(1, 0); glVertex3f( 300, 10,  0);
     glTexCoord2i(1, 1); glVertex3f( 300, 328, 0);
-    glEnd();
-
-    glColor3f(1, 1, 0); // is overridden by the shader, useful for debugging native builds
-    glBegin( GL_TRIANGLES );
-    glTexCoord2f(0, 0.5); glVertex3f(410, 10,  0);
-    glTexCoord2f(1, 0.5); glVertex3f(600, 10,  0);
-    glTexCoord2f(1, 1  ); glVertex3f(630, 400, 0);
     glEnd();
 
     SDL_GL_SwapWindow(window);
@@ -158,11 +134,6 @@ while (!quit){
     SDL_DestroyWindow(window);
 #endif
 
-#ifdef __EMSCRIPTEN__
-    int result = 1;
-    REPORT_RESULT(result);
-#endif
     SDL_Quit();
-
 }
 

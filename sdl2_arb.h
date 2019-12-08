@@ -1,7 +1,13 @@
 
-#include "SDL.h"
-#include "SDL_opengl.h"
-
+#ifndef _SDL2_ARB_
+#define _SDL2_ARB_
+#ifndef __EMSCPRIPTEN__
+    #include "SDL.h"
+    #include "SDL_opengl.h"
+#else
+    #include "SDL2/sdl.h"
+    #include "SDL2/SDL_opengl.h"
+#endif
 
 // GL_ARB_shading_language_100, GL_ARB_shader_objects, GL_ARB_fragment_shader, GL_ARB_vertex_shader
 PFNGLCREATEPROGRAMOBJECTARBPROC       glCreateProgramObject_      = NULL;
@@ -52,3 +58,4 @@ void initARB() {
     glGetActiveUniform_ =           (PFNGLGETACTIVEUNIFORMARBPROC)        SDL_GL_GetProcAddress("glGetActiveUniformARB");
 }
 
+#endif
