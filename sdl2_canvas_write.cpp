@@ -6,11 +6,16 @@
 #ifndef __EMSCPRIPTEN__
 #include "SDL.h"
 #include "SDL_opengl.h"
+#include "SDL_hints.h"
 #include "sdl2_arb.h"
 #else
 #include <emscripten.h>
 #endif
 #include <assert.h>
+#include <iostream>
+
+using std::cout;
+using std::endl;
 
 static void sdlError(const char *str) 
 {
@@ -88,11 +93,18 @@ int main(void) {
     SDL_Window *window;
     SDL_GLContext context;
 
-
+    // Create SDL windows
     if (SDL_Init(SDL_INIT_VIDEO) != 0) sdlError("SDL_Init");
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    window = SDL_CreateWindow("sdlglshader", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_OPENGL);
+    window = SDL_CreateWindow(
+        "An SDL2 window",                  // window title
+        SDL_WINDOWPOS_UNDEFINED,           // initial x position
+        SDL_WINDOWPOS_UNDEFINED,           // initial y position
+        640,                               // width, in pixels
+        480,                               // height, in pixels
+        SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL                  // flags - see below
+    );
 
     if (window == NULL) sdlError("SDL_CreateWindow");
     context = SDL_GL_CreateContext(window);
@@ -128,12 +140,29 @@ int main(void) {
     // draw(window, surface);
 
 #ifndef __EMSCRIPTEN__
-    SDL_Delay(3000);
+    SDL_Event e;
+bool quit = false;
+while (!quit){
+    while (SDL_PollEvent(&e)){
+        if (e.type == SDL_QUIT){
+            quit = true;
+        }
+        if (e.type == SDL_KEYDOWN){
+            quit = true;
+        }
+        if (e.type == SDL_MOUSEBUTTONDOWN){
+            quit = true;
+        }
+    }
+}
+    SDL_DestroyWindow(window);
 #endif
 
 #ifdef __EMSCRIPTEN__
     int result = 1;
     REPORT_RESULT(result);
 #endif
+    SDL_Quit();
+
 }
 
