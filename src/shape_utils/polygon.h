@@ -2,9 +2,12 @@
 #include <cmath>
 #include <vector>
 #include "vector.h"
+#include "line.h"
 
 #ifndef MAP_SHAPE_UTILS_POLYGON
 #define MAP_SHAPE_UTILS_POLYGON
+
+#define MAX_X 100
 namespace map { namespace shapeutils {
 
 using Vec = Vec2<double>;
@@ -13,11 +16,9 @@ class Polygon {
     public:
         Polygon() = default;
         ~Polygon() = default;
-        Polygon& addVec(Vec&& rhs)
-        {
-            points.emplace_back(std::move(rhs));
-            return *this;
-        }
+        Polygon& addVec(Vec&& rhs);
+        size_t size() const;
+        bool isInside(const Vec &rhs) const;
     protected:
     private:
         std::vector<Vec> points;
@@ -25,7 +26,6 @@ class Polygon {
 
 } // namespace shapeutils
 } // namespace map
-
 
 #endif // MAP_SHAPE_UTILS_POLYGON
 

@@ -20,6 +20,14 @@ class Line
         Line(Vec2<T> &&start, Vec2<T> &&end):
             start(std::move(start)), end(std::move(end))
         {}
+        const Vec2<T>& getStart() const
+        {
+            return start;
+        }
+        const Vec2<T>& getEnd() const
+        {
+            return end;
+        }
         ~Line() = default;
         Vec2<T> direction() const
         {
@@ -40,13 +48,48 @@ class Line
             {
                 return false;
             }
-            if (result.direction() != direction())
-            {
-                return false;
-            }
+            return !(result.direction() != direction());
+        }
+        bool linesIntersect(const Line<T>& rhs) const
+        {
+            // TODO fix linesIntersect
+            auto b_1 = this->getStart().getY();
+            auto b_2 = rhs.getStart().getY();
+            auto m_1 = this->getM();
+            auto m_2 = rhs.getM();
+            auto x_intercept = (b_2 - b_1) / (m_1 - m_2);
             return true;
         }
+        // Operators
+        Line<T>& operator=(const Line<T>& rhs)
+        {
+            start = rhs.start;
+            end = rhs.end;
+            return *this;
+        }
+        Line<T>& operator=(Line<T>&& rhs) noexcept
+        {
+            start = std::move(rhs.start);
+            end = std::move(rhs.end);
+            return *this;
+        }
+        friend bool operator==(const Line& lhs, const Line& rhs)
+        {
+            return lhs.getStart() == rhs.getStart() && lhs.getEnd() == rhs.getEnd();
+        }
+        friend bool operator!=(const Line& lhs, const Line& rhs)
+        {
+            return !(lhs == rhs);
+        }
     private:
+        double getM() const
+        {
+            auto dir = direction();
+            if (dir.getY() == 0) {
+                return 0;
+            }
+            return dir.getX() / dir.getY();
+        }
         static T calculate_magnitude(const Vec2<T>& to_test)
         {
             return sqrt((to_test.getX() * to_test.getX()) + (to_test.getY() * to_test.getY()));
@@ -55,11 +98,7 @@ class Line
         {
             T diff_x = end.getX() - start.getX();
             T diff_y = end.getY() - start.getY();
-            T max_val = fmax(diff_x, diff_y);
-            if (max_val == 0) {
-                max_val = 1;
-            }
-            return Vec2<T>(diff_x/max_val, diff_y/max_val);
+            return Vec2<T>(diff_x, diff_y);
         }
         Vec2<T> start; // starting point
         Vec2<T> end; // ending point

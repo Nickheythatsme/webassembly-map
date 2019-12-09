@@ -42,7 +42,10 @@ add_executable(vector_test vector_test.cpp ../src/shape_utils/vector.h)
 target_link_libraries(vector_test gtest_main)
 add_test(NAME vector_test COMMAND vector_test)
 
-add_executable(polygon_test polygon_test.cpp ../src/shape_utils/polygon.h)
+add_executable(polygon_test polygon_test.cpp 
+    ../src/shape_utils/polygon.h
+    ../src/shape_utils/polygon.cpp
+    )
 target_link_libraries(polygon_test gtest_main)
 add_test(NAME polygon_test COMMAND polygon_test)
 ### END Add/Make tests
