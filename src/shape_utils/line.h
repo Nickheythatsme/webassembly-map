@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <cmath>
+#include <limits>
 
 
 #ifndef MAP_SHAPE_UTILS_LINE
@@ -52,12 +53,7 @@ class Line
         }
         bool linesIntersect(const Line<T>& rhs) const
         {
-            // TODO fix linesIntersect
-            auto b_1 = this->getStart().getY();
-            auto b_2 = rhs.getStart().getY();
-            auto m_1 = this->getM();
-            auto m_2 = rhs.getM();
-            auto x_intercept = (b_2 - b_1) / (m_1 - m_2);
+            // TODO implement
             return true;
         }
         // Operators
@@ -87,6 +83,9 @@ class Line
             auto dir = direction();
             if (dir.getY() == 0) {
                 return 0;
+            }
+            if (dir.getX() == 0) {
+                return std::numeric_limits<T>::infinity();
             }
             return dir.getX() / dir.getY();
         }
