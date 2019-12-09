@@ -8,5 +8,5 @@ sdl2: sdl2_example.cpp
 
 clean:
 	rm -f index.*
-	rm -f sdl2glshader sdl2.*
+	rm -f sdl2.*
 

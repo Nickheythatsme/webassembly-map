@@ -46,7 +46,7 @@ std::istream& PolygonRecord::readIn(std::istream& in)
     parts[i] = readLong(in);
   }
   for (int i=0; i<numPoints; ++i) {
-    points[i] = Vec2(
+    points[i] = Vec2<double>(
         readDouble(in),
         readDouble(in)
         );
@@ -88,7 +88,7 @@ Vec2<double> PolygonRecord::calculateCenter() const
 {
     double avg_x = box.x_min - (box.x_min - box.x_max);
     double avg_y = box.y_min - (box.y_min - box.y_max);
-    return Vec2(avg_x, avg_y);
+    return Vec2<double>(avg_x, avg_y);
 }
 
 } // namespace map

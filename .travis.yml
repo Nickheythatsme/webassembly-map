@@ -1,0 +1,13 @@
+language: cpp
+dist: xenial
+sudo: false
+compiler: gcc
+
+matrix:
+  include:
+    - env: COMPILER=g++-6 BUILD=Debug STANDARD=17
+      os: linux
+    - env: COMPILER=g++-6 BUILD=Debug STANDARD=17
+      os: osx
+
+script: mkdir build && cd build && cmake .. && make && ctest -VV

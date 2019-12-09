@@ -5,16 +5,21 @@ project(map)
 enable_testing()
 add_subdirectory(tests)
 
-find_package(SDL2)
 find_package(OpenGL)
+find_package(SDL2)
 
-if (${SDL2_FOUND} AND ${OPENGL_FOUND})
-    include_directories(${SDL2_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR})
+if (${OPENGL_FOUND} AND ${SDL2_FOUND})
+    #set(SDL2_INCLUDE_DIRS ${SDL2_outdir}/include)
+    message(${SDL2_INCLUDE_DIRS})
+    include_directories(${OPENGL_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
     add_executable(
-            sdl2
-            sdl2_example.cpp
+        sdl2
+        sdl2_canvas_write.cpp
     )
-    target_link_libraries(sdl2 ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+    target_link_libraries(sdl2
+        ${OPENGL_LIBRARIES}
+        ${SDL2_LIBRARIES}
+        )
 endif()
 
 add_executable(
@@ -25,3 +30,5 @@ add_executable(
         src/shape_utils/vector.h
         src/shape_utils/line.h
 )
+
+add_test(NAME map COMMAND map ${CMAKE_SOURCE_DIR}/data/Neighborhoods_Regions.shp)
