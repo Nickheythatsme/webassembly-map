@@ -48,4 +48,10 @@ add_executable(polygon_test polygon_test.cpp
     )
 target_link_libraries(polygon_test gtest_main)
 add_test(NAME polygon_test COMMAND polygon_test)
+
+add_executable(matrix_test matrix_test.cpp
+        ../src/shape_utils/matrix.h
+        )
+target_link_libraries(matrix_test gtest_main)
+add_test(NAME matrix_test COMMAND matrix_test)
 ### END Add/Make tests
