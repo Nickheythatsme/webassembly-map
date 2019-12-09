@@ -5,7 +5,7 @@
 #ifndef MAP_SHAPE_UTILS_VECTOR
 #define MAP_SHAPE_UTILS_VECTOR
 
-#define DOUBLE_ERROR_ACCEPTANCE 0.0005
+#define DOUBLE_ERROR_ACCEPTANCE 0.005
 
 namespace map { namespace shapeutils {
 

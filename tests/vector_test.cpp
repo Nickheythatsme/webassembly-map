@@ -72,10 +72,6 @@ TEST(Vector, ErrorAcceptance)
     EXPECT_EQ(vd1, vd2);
 }
 
-TEST(Line, smoke) {
-    Ld line { {1.0, 2.0}, {1.0, 2.0}};
-}
-
 TEST(Line, magnitude) {
     Ld line { {1.0, 2.0}, {1.0, 3.0}};
 
