@@ -30,10 +30,6 @@ class Line
             return end;
         }
         ~Line() = default;
-        Vec2<T> direction() const
-        {
-            return calculate_direction(start, end);
-        }
         T magnitude() const
         {
             return calculate_magnitude(end - start);
@@ -79,25 +75,20 @@ class Line
         }
         T getRateOfChange() const
         {
-            auto dir = direction();
-            if (dir.getY() == 0) {
+            T diff_x = end.getX() - start.getX();
+            T diff_y = end.getY() - start.getY();
+            if (diff_y == 0) {
                 return 0;
             }
-            if (dir.getX() == 0) {
+            if (diff_x == 0) {
                 return std::numeric_limits<T>::infinity();
             }
-            return dir.getX() / dir.getY();
+            return diff_x / diff_y;
         }
     private:
         static T calculate_magnitude(const Vec2<T>& to_test)
         {
             return sqrt((to_test.getX() * to_test.getX()) + (to_test.getY() * to_test.getY()));
-        }
-        static Vec2<T> calculate_direction(const Vec2<T>& start, const Vec2<T>& end)
-        {
-            T diff_x = end.getX() - start.getX();
-            T diff_y = end.getY() - start.getY();
-            return Vec2<T>(diff_x, diff_y);
         }
         Vec2<T> start; // starting point
         Vec2<T> end; // ending point
