@@ -5,6 +5,7 @@
 #include "vector.h"
 #include <memory>
 #include <ostream>
+#include <exception>
 
 #ifndef MAP_SHAPE_UTILS_MATRIX_H_
 #define MAP_SHAPE_UTILS_MATRIX_H_
@@ -14,56 +15,69 @@ namespace map { namespace shapeutils {
 template<typename T>
 class MatrixIterator;
 template<typename T>
-class VerticleMatrixIterator;
+class VerticalMatrixIterator;
 template<typename T>
 class HorizontalMatrixIterator;
+template<typename T>
+class ConstHorizontalMatrixIterator;
+template<typename T>
+class ConstVerticalMatrixIterator;
 
 template<typename T>
 class Matrix
 {
 public:
     Matrix() = delete;
-    Matrix(size_t n, size_t m) :
-        n(n), m(m),
-        data(new T[n*m])
+    // Create a new mxn matrix where M is rows and N is columns
+    Matrix(size_t rows, size_t cols) :
+        cols(cols), rows(rows),
+        data(new T[cols*rows])
     {
-        for (int i=0; i<n*m; ++i) {
+        //memset(data.get(), 0x0, rows*cols*sizeof(T));
+        for (int i=0; i<rows*cols; ++i) {
             data[i] = 0.0;
         }
     }
     Matrix(Matrix<T> &&rhs) noexcept :
-        n(rhs.n), m(rhs.m),
+        cols(rhs.cols), rows(rhs.rows),
         data(std::move(rhs.data))
     {
     }
     Matrix(const Matrix<T> &rhs) :
-        n(rhs.n), m(rhs.m),
-        data(new T[n*m])
+        cols(rhs.cols), rows(rhs.rows),
+        data(new T[cols*rows])
     {
-        memcpy(data.get(), rhs.data.get(), n*m);
+        memcpy(data.get(), rhs.data.get(), cols*rows);
     }
     ~Matrix() = default;
     Matrix<T>& operator=(Matrix<T>&& rhs) noexcept;
     Matrix<T>& operator=(const Matrix<T>& rhs);
-    T& access(size_t n_access, size_t m_access);
-    const T& access(size_t n_access, size_t m_access) const;
-    VerticleMatrixIterator<T> beginVerticle(size_t i);
-    VerticleMatrixIterator<T> endVerticle(size_t i);
+    T& access(size_t row_access, size_t col_access);
+    const T& access(size_t row_access, size_t col_access) const;
+    // Iterators
+    VerticalMatrixIterator<T> beginVertical(size_t col_access);
+    ConstVerticalMatrixIterator<T> beginVertical(size_t col_access) const;
+    VerticalMatrixIterator<T> endVertical(size_t col_access);
+    ConstVerticalMatrixIterator<T> endVertical(size_t col_access) const;
     HorizontalMatrixIterator<T> beginHorizontal(size_t i);
+    ConstHorizontalMatrixIterator<T> beginHorizontal(size_t i) const;
     HorizontalMatrixIterator<T> endHorizontal(size_t i);
+    ConstHorizontalMatrixIterator<T> endHorizontal(size_t i) const;
+    // Multiplication
+    friend Matrix<T> operator*(const Matrix<T>& lhs, const Matrix<T>& rhs);
     friend std::ostream& operator<<(std::ostream& out, const Matrix<T>& rhs)
     {
-        for (int current_m=0; current_m< rhs.m; ++current_m) {
-            for (int current_n=0; current_n < rhs.n; ++current_n) {
-                out << rhs.data[current_n*rhs.m + current_m] << " ";
+        for (int i=0; i<rhs.rows; ++i) {
+            for (int j=0; j<rhs.cols; ++j) {
+                out << rhs.data[i*rhs.rows + j] << " ";
             }
-            out << std::endl;
+            out << '\n';
         }
         return out;
     }
 protected:
-    size_t n;
-    size_t m;
+    size_t cols;
+    size_t rows;
     std::unique_ptr<T[]> data;
 private:
 };
@@ -85,6 +99,10 @@ class MatrixIterator: public std::iterator<std::input_iterator_tag, T>
         {
             return *p;
         }
+        const T& const_dereference() const
+        {
+            return *p;
+        }
     protected:
         virtual void increment() = 0;
         T* p;
@@ -92,31 +110,30 @@ class MatrixIterator: public std::iterator<std::input_iterator_tag, T>
 };
 
 template<typename T>
-class VerticleMatrixIterator: MatrixIterator<T>
+class VerticalMatrixIterator: public MatrixIterator<T>
 {
     public:
-        explicit VerticleMatrixIterator(T *p) :
+        explicit VerticalMatrixIterator(T *p) :
             MatrixIterator<T>(p)
         {}
-        VerticleMatrixIterator(const VerticleMatrixIterator<T> &rhs):
-            MatrixIterator<T>(rhs.p)
-        {}
-        VerticleMatrixIterator<T>& operator++()
+        VerticalMatrixIterator(const VerticalMatrixIterator<T> &rhs) = default;
+        VerticalMatrixIterator(VerticalMatrixIterator<T> &&rhs) = default;
+        VerticalMatrixIterator<T>& operator++()
         {
             increment();
             return *this;
         }
-        const VerticleMatrixIterator<T> operator++(int)
+        const VerticalMatrixIterator<T> operator++(int)
         {
-            VerticleMatrixIterator<T> tmp(*this);
+            VerticalMatrixIterator<T> tmp(*this);
             increment();
             return tmp;
         }
-        bool operator==(const VerticleMatrixIterator<T>& rhs) const
+        bool operator==(const VerticalMatrixIterator<T>& rhs) const
         {
             return MatrixIterator<T>::equal(rhs);
         }
-        bool operator!=(const VerticleMatrixIterator<T>& rhs) const
+        bool operator!=(const VerticalMatrixIterator<T>& rhs) const
         {
             return !MatrixIterator<T>::equal(rhs);
         }
@@ -133,17 +150,32 @@ class VerticleMatrixIterator: MatrixIterator<T>
 };
 
 template<typename T>
-class HorizontalMatrixIterator: MatrixIterator<T>
+class ConstVerticalMatrixIterator: public VerticalMatrixIterator<T>
 {
     public:
-        explicit HorizontalMatrixIterator(T *p, size_t n) :
-            n(n),
+        explicit ConstVerticalMatrixIterator(T *p) :
+            VerticalMatrixIterator<T>(p)
+        {}
+        ConstVerticalMatrixIterator(const ConstVerticalMatrixIterator<T> &rhs) = default;
+        ConstVerticalMatrixIterator(ConstVerticalMatrixIterator<T> &&rhs) = default;
+        const T& operator*() const
+        {
+            return MatrixIterator<T>::const_dereference();
+        }
+    protected:
+    private:
+};
+
+template<typename T>
+class HorizontalMatrixIterator: public MatrixIterator<T>
+{
+    public:
+        explicit HorizontalMatrixIterator(T *p, size_t rows) :
+            rows(rows),
             MatrixIterator<T>(p)
         {}
-        HorizontalMatrixIterator(const HorizontalMatrixIterator<T> &rhs):
-            n(rhs.n),
-            MatrixIterator<T>(rhs.p)
-        {}
+        HorizontalMatrixIterator(const HorizontalMatrixIterator<T> &rhs) = default;
+        HorizontalMatrixIterator(HorizontalMatrixIterator<T> &&rhs) noexcept = default;
         HorizontalMatrixIterator<T>& operator++()
         {
             increment();
@@ -170,10 +202,27 @@ class HorizontalMatrixIterator: MatrixIterator<T>
     protected:
         void increment()
         {
-            MatrixIterator<T>::p += n;
+            MatrixIterator<T>::p += rows;
         }
     private:
-        size_t n;
+        size_t rows;
+};
+
+template<typename T>
+class ConstHorizontalMatrixIterator: public HorizontalMatrixIterator<T>
+{
+    public:
+        explicit ConstHorizontalMatrixIterator(T *p, size_t rows) :
+            HorizontalMatrixIterator<T>(p, rows)
+        {}
+        ConstHorizontalMatrixIterator(const ConstHorizontalMatrixIterator<T> &rhs) = default;
+        ConstHorizontalMatrixIterator(ConstHorizontalMatrixIterator<T> &&rhs) noexcept = default;
+        const T& operator*() const
+        {
+            return MatrixIterator<T>::const_dereference();
+        }
+    protected:
+    private:
 };
 
 } // namespace shapeutils

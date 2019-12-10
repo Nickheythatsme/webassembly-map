@@ -23,20 +23,32 @@ TEST(Matrix, Access) {
     EXPECT_EQ(matrix.access(1, 2), 4.0);
 }
 
+void test(const Matrix<double> &matrix)
+{
+    std::stringstream ss;
+    for (auto it = matrix.beginHorizontal(0); it != matrix.endHorizontal(0); ++it)
+    {
+        ss << *it << " ";
+    }
+    cout << endl << ss.str() << endl;
+}
+
 TEST(Matrix, Iterators) {
     Matrix<double> matrix {2, 3};
-    matrix.access(0,0) = 1.0;
-    matrix.access(0,1) = 2.0;
-    matrix.access(0,2) = 3.0;
-    matrix.access(1,0) = 2.0;
+    matrix.access(0, 0) = 0.0;
+    matrix.access(0, 1) = 1.0;
+    matrix.access(0, 2) = 2.0;
+    matrix.access(1, 0) = 3.0;
+    matrix.access(1, 1) = 4.0;
+    matrix.access(1, 2) = 5.0;
     {
         std::stringstream ss;
-        for (auto it = matrix.beginVerticle(0); it != matrix.endVerticle(0); ++it)
+        for (auto it = matrix.beginVertical(0); it != matrix.endVertical(0); ++it)
         {
             ss << *it << "\n";
         }
         cout << endl << ss.str() << endl;
-        EXPECT_EQ(ss.str(), "1\n2\n3\n");
+        EXPECT_EQ(ss.str(), "0\n3\n");
     }
     {
         std::stringstream ss;
@@ -45,6 +57,6 @@ TEST(Matrix, Iterators) {
             ss << *it << " ";
         }
         cout << endl << ss.str() << endl;
-        EXPECT_EQ(ss.str(), "1 2 ");
+        EXPECT_EQ(ss.str(), "0 1 2 ");
     }
 }

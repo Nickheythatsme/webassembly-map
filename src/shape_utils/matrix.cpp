@@ -9,8 +9,8 @@ namespace map { namespace shapeutils {
 template <typename T>
 Matrix<T>& Matrix<T>::operator=(Matrix<T>&& rhs) noexcept
 {
-    n = rhs.n;
-    m = rhs.m;
+    cols = rhs.cols;
+    rows = rhs.rows;
     data = std::move(rhs.data);
     return *this;
 }
@@ -18,49 +18,82 @@ Matrix<T>& Matrix<T>::operator=(Matrix<T>&& rhs) noexcept
 template <typename T>
 Matrix<T>& Matrix<T>::operator=(const Matrix<T>& rhs)
 {
-    n = rhs.n;
-    m = rhs.m;
-    data.reset(new T[n*m]);
-    for (int i=0; i<n*m; ++i) {
+    cols = rhs.cols;
+    rows = rhs.rows;
+    data.reset(new T[cols*rows]);
+    for (int i=0; i<cols*rows; ++i) {
         data[i] = rhs.data[i];
     }
     return *this;
 }
 
 template <typename T>
-VerticleMatrixIterator<T> Matrix<T>::beginVerticle(size_t n_access)
+VerticalMatrixIterator<T> Matrix<T>::beginVertical(size_t col_access)
 {
-    return VerticleMatrixIterator<T>(&data[m * n_access]);
+    return VerticalMatrixIterator<T>(&data[rows * col_access]);
 }
 
 template <typename T>
-VerticleMatrixIterator<T> Matrix<T>::endVerticle(size_t n_access)
+ConstVerticalMatrixIterator<T> Matrix<T>::beginVertical(size_t col_access) const
 {
-    return VerticleMatrixIterator<T>(&data[m * n_access + m]);
+    return ConstVerticalMatrixIterator<T>(&data[rows * col_access]);
+}
+
+template <typename T>
+VerticalMatrixIterator<T> Matrix<T>::endVertical(size_t col_access)
+{
+    return VerticalMatrixIterator<T>(&data[rows * col_access + rows]);
+}
+
+template <typename T>
+ConstVerticalMatrixIterator<T> Matrix<T>::endVertical(size_t col_access) const
+{
+    return ConstVerticalMatrixIterator<T>(&data[rows * col_access + rows]);
 }
 
 template <typename T>
 HorizontalMatrixIterator<T> Matrix<T>::beginHorizontal(size_t i)
 {
-    return HorizontalMatrixIterator<T>(&data[i], m);
+    return HorizontalMatrixIterator<T>(&data[i], rows);
+}
+
+template <typename T>
+ConstHorizontalMatrixIterator<T> Matrix<T>::beginHorizontal(size_t i) const
+{
+    return ConstHorizontalMatrixIterator<T>(&data[i], rows);
 }
 
 template <typename T>
 HorizontalMatrixIterator<T> Matrix<T>::endHorizontal(size_t i)
 {
-    return HorizontalMatrixIterator<T>(&data[n*m + i], m);
+    return HorizontalMatrixIterator<T>(&data[cols*rows + i], rows);
 }
 
 template <typename T>
-T& Matrix<T>::access(size_t n_access, size_t m_access)
+ConstHorizontalMatrixIterator<T> Matrix<T>::endHorizontal(size_t i) const
 {
-    return data.get()[n_access * m + m_access];
+    return ConstHorizontalMatrixIterator<T>(&data[cols*rows + i], rows);
 }
 
 template <typename T>
-const T& Matrix<T>::access(size_t n_access, size_t m_access) const
+T& Matrix<T>::access(size_t row_access, size_t col_access)
 {
-    return data.get()[n_access * m + m_access];
+    return data.get()[rows * col_access + row_access];
+}
+
+template <typename T>
+const T& Matrix<T>::access(size_t row_access, size_t col_access) const
+{
+    return data.get()[rows * col_access + row_access];
+}
+
+template <typename T>
+Matrix<T> operator*(const Matrix<T>& lhs, const Matrix<T>& rhs)
+{
+    if (lhs.cols != rhs.rows) {
+        throw std::invalid_argument("n of matrix 1 must equal m of matrix 2");
+    }
+    Matrix<T> new_matrix {};
 }
 
 } // namespace shapeutils

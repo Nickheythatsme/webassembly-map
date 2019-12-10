@@ -7,7 +7,6 @@
 #ifndef MAP_SHAPE_UTILS_POLYGON
 #define MAP_SHAPE_UTILS_POLYGON
 
-#define MAX_X 100
 namespace map { namespace shapeutils {
 
 using Vec = Vec2<double>;
