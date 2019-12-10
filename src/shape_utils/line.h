@@ -49,7 +49,7 @@ class Line
             {
                 return false;
             }
-            return !(result.direction() != direction());
+            return !(result.getRateOfChange() != getRateOfChange());
         }
         bool linesIntersect(const Line<T>& rhs) const
         {
@@ -77,8 +77,7 @@ class Line
         {
             return !(lhs == rhs);
         }
-    private:
-        double getM() const
+        T getRateOfChange() const
         {
             auto dir = direction();
             if (dir.getY() == 0) {
@@ -89,6 +88,7 @@ class Line
             }
             return dir.getX() / dir.getY();
         }
+    private:
         static T calculate_magnitude(const Vec2<T>& to_test)
         {
             return sqrt((to_test.getX() * to_test.getX()) + (to_test.getY() * to_test.getY()));

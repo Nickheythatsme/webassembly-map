@@ -30,4 +30,4 @@ add_executable(
         src/shape_utils/vector.h
         src/shape_utils/line.h
 )
-
+add_test(NAME map COMMAND map ${CMAKE_SOURCE_DIR}/data/Neighborhoods_Regions.shp)
