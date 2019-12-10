@@ -21,6 +21,7 @@ TEST(Polygon, AddVec) {
 }
 
 TEST(Polygon, isInside) {
+    // TODO finish poly test
     Polygon poly;
     Vec vec {0,0};
     poly.addVec(Vec(-1.0, -1.0));
@@ -29,5 +30,4 @@ TEST(Polygon, isInside) {
     poly.addVec(Vec(1.0, -1.0));
 
     EXPECT_TRUE(poly.isInside(vec));
-
 }
