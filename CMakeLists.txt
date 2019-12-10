@@ -5,8 +5,8 @@ project(map)
 enable_testing()
 add_subdirectory(tests)
 
-find_package(OpenGL)
-find_package(SDL2)
+#find_package(OpenGL)
+#find_package(SDL2)
 
 if (${OPENGL_FOUND} AND ${SDL2_FOUND})
     #set(SDL2_INCLUDE_DIRS ${SDL2_outdir}/include)
